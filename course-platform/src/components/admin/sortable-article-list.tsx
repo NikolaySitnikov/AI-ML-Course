@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useId } from "react";
+import { useState, useId, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -162,6 +162,11 @@ export function SortableArticleList({ courseId, chapterId, initialArticles }: So
   const [articles, setArticles] = useState(initialArticles);
   const [isSaving, setIsSaving] = useState(false);
   const dndId = useId();
+
+  // Sync state when initialArticles changes (e.g., after import or delete)
+  useEffect(() => {
+    setArticles(initialArticles);
+  }, [initialArticles]);
 
   const handlePublishToggle = async (articleId: string, published: boolean) => {
     try {

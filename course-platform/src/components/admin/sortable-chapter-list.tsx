@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useId } from "react";
+import { useState, useId, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -170,6 +170,11 @@ export function SortableChapterList({ courseId, initialChapters }: SortableChapt
   const [chapters, setChapters] = useState(initialChapters);
   const [isSaving, setIsSaving] = useState(false);
   const dndId = useId();
+
+  // Sync state when initialChapters changes (e.g., after delete)
+  useEffect(() => {
+    setChapters(initialChapters);
+  }, [initialChapters]);
 
   const handlePublishToggle = async (chapterId: string, published: boolean) => {
     try {

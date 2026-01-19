@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { PageHeader, EmptyState, BackLink } from "@/components/shared";
 import { SortableArticleList } from "@/components/admin/sortable-article-list";
+import { ArticlesPageActions } from "@/components/admin/articles-page-actions";
 
 interface ArticlesPageProps {
   params: Promise<{ courseId: string; chapterId: string }>;
@@ -52,14 +53,7 @@ export default async function ArticlesPage({ params }: ArticlesPageProps) {
       <PageHeader
         title={`Articles: ${chapter.title}`}
         description={`Manage articles in this chapter. Drag to reorder.`}
-        actions={
-          <Link href={`/admin/courses/${courseId}/chapters/${chapterId}/articles/new`}>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              New Article
-            </Button>
-          </Link>
-        }
+        actions={<ArticlesPageActions courseId={courseId} chapterId={chapterId} />}
       />
 
       {articles.length === 0 ? (
