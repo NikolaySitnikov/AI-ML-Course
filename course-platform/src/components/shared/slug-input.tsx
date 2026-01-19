@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect, useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -30,13 +30,15 @@ export const SlugInput = forwardRef<HTMLInputElement, SlugInputProps>(
   ({ label = "Slug", error, hint, sourceValue, value, onChange, className, id, ...props }, ref) => {
     const inputId = id || props.name || "slug";
     const [isManuallyEdited, setIsManuallyEdited] = useState(false);
+    const onChangeRef = useRef(onChange);
+    onChangeRef.current = onChange;
 
     // Auto-generate slug from source when not manually edited
     useEffect(() => {
       if (sourceValue && !isManuallyEdited) {
-        onChange(generateSlug(sourceValue));
+        onChangeRef.current(generateSlug(sourceValue));
       }
-    }, [sourceValue, isManuallyEdited, onChange]);
+    }, [sourceValue, isManuallyEdited]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setIsManuallyEdited(true);

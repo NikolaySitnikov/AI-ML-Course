@@ -1,10 +1,7 @@
-"use client";
-
 import { cn } from "@/lib/utils";
-import { LucideIcon } from "lucide-react";
 
 interface EmptyStateProps {
-  icon: LucideIcon;
+  icon: React.ReactNode;
   title: string;
   description: string;
   action?: React.ReactNode;
@@ -12,7 +9,7 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({
-  icon: Icon,
+  icon,
   title,
   description,
   action,
@@ -26,7 +23,7 @@ export function EmptyState({
       )}
     >
       <div className="rounded-full bg-muted p-4 mb-4">
-        <Icon className="h-8 w-8 text-muted-foreground" />
+        {icon}
       </div>
       <h3 className="text-lg font-semibold mb-1">{title}</h3>
       <p className="text-muted-foreground max-w-sm mb-4">{description}</p>
