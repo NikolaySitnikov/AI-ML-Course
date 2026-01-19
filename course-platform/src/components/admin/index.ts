@@ -5,3 +5,6 @@ export { DeleteCourseButton } from "./delete-course-button";
 export { ChapterForm } from "./chapter-form";
 export { DeleteChapterButton } from "./delete-chapter-button";
 export { SortableChapterList } from "./sortable-chapter-list";
+export { ArticleForm } from "./article-form";
+export { DeleteArticleButton } from "./delete-article-button";
+export { SortableArticleList } from "./sortable-article-list";
