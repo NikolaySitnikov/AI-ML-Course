@@ -156,9 +156,12 @@
     @apply bg-background text-foreground antialiased;
   }
 
-  /* Smooth scrolling */
+  /* Smooth scrolling and disable overscroll bounce */
   html {
     scroll-behavior: smooth;
+    overscroll-behavior: none;
+    /* Account for fixed header when scrolling to top */
+    scroll-padding-top: 80px;
   }
 }
 

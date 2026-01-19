@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { ArrowLeft, ChevronDown, ChevronRight } from "lucide-react";
 
@@ -35,7 +35,8 @@ export function CourseSidebar({
     return initial;
   });
 
-  const [sidebarHeight, setSidebarHeight] = useState("calc(100vh - 5rem)");
+  // 80px header + 60px sticky footer = 140px
+  const sidebarHeight = "calc(100vh - 140px)";
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   const toggleChapter = (chapterSlug: string) => {
@@ -49,38 +50,6 @@ export function CourseSidebar({
       return next;
     });
   };
-
-  // Adjust sidebar height when footer comes into view
-  useEffect(() => {
-    const updateHeight = () => {
-      const footer = document.querySelector("footer");
-      if (!footer) {
-        setSidebarHeight("calc(100vh - 5rem)");
-        return;
-      }
-
-      const footerRect = footer.getBoundingClientRect();
-      const headerHeight = 80; // top-20 = 5rem = 80px
-      const viewportHeight = window.innerHeight;
-
-      // If footer is visible, reduce sidebar height to not overlap
-      if (footerRect.top < viewportHeight) {
-        const availableHeight = footerRect.top - headerHeight;
-        setSidebarHeight(`${Math.max(100, availableHeight)}px`);
-      } else {
-        setSidebarHeight("calc(100vh - 5rem)");
-      }
-    };
-
-    updateHeight();
-    window.addEventListener("scroll", updateHeight);
-    window.addEventListener("resize", updateHeight);
-
-    return () => {
-      window.removeEventListener("scroll", updateHeight);
-      window.removeEventListener("resize", updateHeight);
-    };
-  }, []);
 
   return (
     <aside className="hidden lg:block w-72 shrink-0">

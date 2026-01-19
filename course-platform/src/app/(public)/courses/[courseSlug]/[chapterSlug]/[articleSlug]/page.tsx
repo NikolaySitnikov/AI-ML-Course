@@ -4,6 +4,7 @@ import { ChevronRight, ChevronLeft } from "lucide-react";
 import { db } from "@/lib/db";
 import { ArticleContent } from "@/components/public/article-content";
 import { CourseSidebar } from "@/components/public/course-sidebar";
+import { ArticleHeader } from "@/components/public/article-header";
 
 interface ArticlePageProps {
   params: Promise<{
@@ -114,60 +115,37 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null;
 
   return (
-    <div className="py-8 sm:py-12">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="flex gap-12 relative">
-          {/* Sidebar - Table of Contents */}
-          <CourseSidebar
-            courseSlug={course.slug}
-            courseTitle={course.title}
-            chapters={course.chapters.map((ch) => ({
-              id: ch.id,
-              title: ch.title,
-              slug: ch.slug,
-              articles: ch.articles.map((art) => ({
-                id: art.id,
-                title: art.title,
-                slug: art.slug,
-              })),
-            }))}
-            currentChapterSlug={chapterSlug}
-            currentArticleSlug={articleSlug}
-          />
+    <>
+      <div className="pb-8 sm:pb-12 overscroll-none">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="flex gap-12 relative">
+            {/* Sidebar - Table of Contents */}
+            <CourseSidebar
+              courseSlug={course.slug}
+              courseTitle={course.title}
+              chapters={course.chapters.map((ch) => ({
+                id: ch.id,
+                title: ch.title,
+                slug: ch.slug,
+                articles: ch.articles.map((art) => ({
+                  id: art.id,
+                  title: art.title,
+                  slug: art.slug,
+                })),
+              }))}
+              currentChapterSlug={chapterSlug}
+              currentArticleSlug={articleSlug}
+            />
 
-          {/* Main Content */}
-          <article className="flex-1 min-w-0 max-w-3xl">
-            {/* Breadcrumb */}
-            <nav className="mb-8 flex items-center gap-2 text-sm text-muted-foreground">
-              <Link
-                href="/courses"
-                className="hover:text-primary transition-colors"
-              >
-                Courses
-              </Link>
-              <ChevronRight className="h-4 w-4" />
-              <Link
-                href={`/courses/${course.slug}`}
-                className="hover:text-primary transition-colors"
-              >
-                {course.title}
-              </Link>
-              <ChevronRight className="h-4 w-4" />
-              <span className="text-foreground truncate">{article.title}</span>
-            </nav>
-
-            {/* Article Header */}
-            <header className="mb-8">
-              <div className="text-sm text-muted-foreground mb-2">
-                {chapter.title}
-              </div>
-              <h1 className="text-h1">{article.title}</h1>
-              {article.description && (
-                <p className="mt-4 text-lg text-muted-foreground">
-                  {article.description}
-                </p>
-              )}
-            </header>
+            {/* Main Content */}
+            <article className="flex-1 min-w-0 max-w-3xl">
+              <ArticleHeader
+                courseSlug={course.slug}
+                courseTitle={course.title}
+                chapterTitle={chapter.title}
+                articleTitle={article.title}
+                articleDescription={article.description}
+              />
 
             {/* Article Content */}
             <div className="article-container-wide">
@@ -216,5 +194,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </div>
       </div>
     </div>
+    </>
   );
 }
