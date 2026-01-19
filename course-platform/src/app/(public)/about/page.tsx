@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export const metadata = {
   title: "About",
   description: "Learn about our AI and Machine Learning course platform.",
@@ -35,7 +37,7 @@ export default function AboutPage() {
           <h2>Get Started</h2>
           <p>
             Ready to begin your learning journey? Head over to our{" "}
-            <a href="/courses">courses page</a> to explore what we offer and find
+            <Link href="/courses">courses page</Link> to explore what we offer and find
             the right course for you.
           </p>
         </div>

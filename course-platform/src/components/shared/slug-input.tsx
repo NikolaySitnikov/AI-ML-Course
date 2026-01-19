@@ -31,7 +31,11 @@ export const SlugInput = forwardRef<HTMLInputElement, SlugInputProps>(
     const inputId = id || props.name || "slug";
     const [isManuallyEdited, setIsManuallyEdited] = useState(false);
     const onChangeRef = useRef(onChange);
-    onChangeRef.current = onChange;
+
+    // Update ref in an effect to avoid updating during render
+    useEffect(() => {
+      onChangeRef.current = onChange;
+    }, [onChange]);
 
     // Auto-generate slug from source when not manually edited
     useEffect(() => {
