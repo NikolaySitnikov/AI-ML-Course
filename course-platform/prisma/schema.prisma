@@ -1,0 +1,97 @@
+// This is your Prisma schema file
+// Learn more at: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Course - Top level container for educational content
+model Course {
+  id              String    @id @default(cuid())
+  title           String
+  slug            String    @unique
+  description     String
+  longDescription String?   @db.Text
+  icon            String?   // emoji or icon name
+  color           String?   // hex color for accent
+  coverImage      String?   // URL to cover image
+  published       Boolean   @default(false)
+  order           Int       @default(0)
+
+  chapters Chapter[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published])
+  @@index([order])
+}
+
+// Chapter - Groups articles within a course
+model Chapter {
+  id          String  @id @default(cuid())
+  title       String
+  slug        String
+  description String?
+  order       Int     @default(0)
+  published   Boolean @default(false)
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  articles Article[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([courseId, slug])
+  @@index([courseId])
+  @@index([order])
+}
+
+// Article - Individual learning content
+model Article {
+  id               String  @id @default(cuid())
+  title            String
+  slug             String
+  subtitle         String?
+  description      String? // Short description for cards/SEO
+  content          Json?   // Tiptap JSON content (includes text + image positions)
+  estimatedMinutes Int?
+  order            Int     @default(0)
+  published        Boolean @default(false)
+
+  chapterId String
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  images ArticleImage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([chapterId, slug])
+  @@index([chapterId])
+  @@index([order])
+}
+
+// ArticleImage - Images embedded in articles
+model ArticleImage {
+  id       String @id @default(cuid())
+  url      String // Stored image URL
+  alt      String
+  caption  String?
+  size     String @default("large") // small, medium, large, full
+  position String @default("center") // center, left, right
+
+  articleId String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([articleId])
+}
