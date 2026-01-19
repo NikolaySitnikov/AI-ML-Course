@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useId } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -146,6 +146,7 @@ export function SortableArticleList({ courseId, chapterId, initialArticles }: So
   const router = useRouter();
   const [articles, setArticles] = useState(initialArticles);
   const [isSaving, setIsSaving] = useState(false);
+  const dndId = useId();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -196,6 +197,7 @@ export function SortableArticleList({ courseId, chapterId, initialArticles }: So
 
   return (
     <DndContext
+      id={dndId}
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}

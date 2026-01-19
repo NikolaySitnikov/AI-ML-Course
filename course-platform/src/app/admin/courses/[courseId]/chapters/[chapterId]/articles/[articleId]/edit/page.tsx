@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { db } from "@/lib/db";
+import { FileEdit } from "lucide-react";
 import { PageHeader, BackLink } from "@/components/shared";
+import { Button } from "@/components/ui/button";
 import { ArticleForm } from "@/components/admin/article-form";
 
 interface EditArticlePageProps {
@@ -41,6 +44,14 @@ export default async function EditArticlePage({ params }: EditArticlePageProps) 
       <PageHeader
         title="Edit Article"
         description={`Editing "${article.title}"`}
+        actions={
+          <Link href={`/admin/courses/${courseId}/chapters/${chapterId}/articles/${articleId}/content`}>
+            <Button>
+              <FileEdit className="h-4 w-4 mr-2" />
+              Edit Content
+            </Button>
+          </Link>
+        }
       />
 
       <ArticleForm

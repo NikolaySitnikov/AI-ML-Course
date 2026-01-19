@@ -217,6 +217,15 @@
     margin-bottom: 1.75em;
   }
 
+  .prose-article h1 {
+    font-family: var(--font-serif, ui-serif, Georgia, serif);
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+
   .prose-article h2 {
     font-family: var(--font-serif, ui-serif, Georgia, serif);
     font-size: 1.75rem;
