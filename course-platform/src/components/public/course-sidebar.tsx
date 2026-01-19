@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, ChevronDown, ChevronRight } from "lucide-react";
 
@@ -38,6 +38,32 @@ export function CourseSidebar({
   // 80px header + 60px sticky footer = 140px
   const sidebarHeight = "calc(100vh - 140px)";
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const activeArticleRef = useRef<HTMLAnchorElement>(null);
+
+  // Ensure current chapter is expanded and scroll active article into view
+  useEffect(() => {
+    // Expand the current chapter if not already expanded
+    setExpandedChapters((prev) => {
+      if (!prev.has(currentChapterSlug)) {
+        const next = new Set(prev);
+        next.add(currentChapterSlug);
+        return next;
+      }
+      return prev;
+    });
+
+    // Small delay to ensure DOM is ready after chapter expansion
+    const timer = setTimeout(() => {
+      if (activeArticleRef.current) {
+        activeArticleRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [currentArticleSlug, currentChapterSlug]);
 
   const toggleChapter = (chapterSlug: string) => {
     setExpandedChapters((prev) => {
@@ -104,6 +130,7 @@ export function CourseSidebar({
                       return (
                         <li key={art.id}>
                           <Link
+                            ref={isActive ? activeArticleRef : null}
                             href={`/courses/${courseSlug}/${ch.slug}/${art.slug}`}
                             className={`block py-1.5 px-3 text-sm rounded-md transition-colors ${
                               isActive
