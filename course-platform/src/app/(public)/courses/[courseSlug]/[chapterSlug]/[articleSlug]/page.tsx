@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronRight, ChevronLeft, ArrowLeft } from "lucide-react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 import { db } from "@/lib/db";
 import { ArticleContent } from "@/components/public/article-content";
+import { CourseSidebar } from "@/components/public/course-sidebar";
 
 interface ArticlePageProps {
   params: Promise<{
@@ -115,49 +116,24 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   return (
     <div className="py-8 sm:py-12">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="flex gap-12">
+        <div className="flex gap-12 relative">
           {/* Sidebar - Table of Contents */}
-          <aside className="hidden lg:block w-72 shrink-0">
-            <div className="sticky top-24 space-y-6">
-              <Link
-                href={`/courses/${course.slug}`}
-                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Course
-              </Link>
-
-              <nav className="space-y-4">
-                {course.chapters.map((ch, chapterIndex) => (
-                  <div key={ch.id}>
-                    <h4 className="text-sm font-medium text-muted-foreground mb-2">
-                      {chapterIndex + 1}. {ch.title}
-                    </h4>
-                    <ul className="space-y-1">
-                      {ch.articles.map((art) => {
-                        const isActive =
-                          ch.slug === chapterSlug && art.slug === articleSlug;
-                        return (
-                          <li key={art.id}>
-                            <Link
-                              href={`/courses/${course.slug}/${ch.slug}/${art.slug}`}
-                              className={`block py-1 px-3 text-sm rounded-md transition-colors ${
-                                isActive
-                                  ? "bg-primary/10 text-primary font-medium"
-                                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                              }`}
-                            >
-                              {art.title}
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                ))}
-              </nav>
-            </div>
-          </aside>
+          <CourseSidebar
+            courseSlug={course.slug}
+            courseTitle={course.title}
+            chapters={course.chapters.map((ch) => ({
+              id: ch.id,
+              title: ch.title,
+              slug: ch.slug,
+              articles: ch.articles.map((art) => ({
+                id: art.id,
+                title: art.title,
+                slug: art.slug,
+              })),
+            }))}
+            currentChapterSlug={chapterSlug}
+            currentArticleSlug={articleSlug}
+          />
 
           {/* Main Content */}
           <article className="flex-1 min-w-0 max-w-3xl">
