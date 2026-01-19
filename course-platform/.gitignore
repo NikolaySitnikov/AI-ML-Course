@@ -42,3 +42,7 @@ next-env.d.ts
 
 /src/generated/prisma
 test-results/
+
+# Uploaded files (keep directory but ignore contents)
+/public/uploads/*
+!/public/uploads/.gitkeep

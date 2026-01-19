@@ -11,6 +11,7 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { Markdown } from "tiptap-markdown";
 import { common, createLowlight } from "lowlight";
 import { EditorToolbar } from "./editor-toolbar";
+import { ArticleImage } from "./image-extension";
 
 const lowlight = createLowlight(common);
 
@@ -57,6 +58,10 @@ export function TiptapEditor({
         html: true,
         transformPastedText: true,
         transformCopiedText: false,
+      }),
+      ArticleImage.configure({
+        inline: false,
+        allowBase64: false,
       }),
     ],
     content: content || "",
