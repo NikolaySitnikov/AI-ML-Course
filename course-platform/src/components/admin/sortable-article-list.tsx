@@ -20,7 +20,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, MoreHorizontal, Pencil, FileEdit } from "lucide-react";
+import { GripVertical, MoreHorizontal, Pencil, FileEdit, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { Article } from "@prisma/client";
 
@@ -41,9 +41,10 @@ interface SortableArticleItemProps {
   courseId: string;
   chapterId: string;
   index: number;
+  onPublishToggle: (articleId: string, published: boolean) => void;
 }
 
-function SortableArticleItem({ article, courseId, chapterId, index }: SortableArticleItemProps) {
+function SortableArticleItem({ article, courseId, chapterId, index, onPublishToggle }: SortableArticleItemProps) {
   const {
     attributes,
     listeners,
@@ -122,6 +123,20 @@ function SortableArticleItem({ article, courseId, chapterId, index }: SortableAr
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => onPublishToggle(article.id, !article.published)}>
+                {article.published ? (
+                  <>
+                    <EyeOff className="h-4 w-4 mr-2" />
+                    Unpublish
+                  </>
+                ) : (
+                  <>
+                    <Eye className="h-4 w-4 mr-2" />
+                    Publish
+                  </>
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DeleteArticleButton
                 courseId={courseId}
                 chapterId={chapterId}
@@ -147,6 +162,33 @@ export function SortableArticleList({ courseId, chapterId, initialArticles }: So
   const [articles, setArticles] = useState(initialArticles);
   const [isSaving, setIsSaving] = useState(false);
   const dndId = useId();
+
+  const handlePublishToggle = async (articleId: string, published: boolean) => {
+    try {
+      const response = await fetch(
+        `/api/courses/${courseId}/chapters/${chapterId}/articles/${articleId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ published }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update article");
+      }
+
+      // Update local state
+      setArticles((prev) =>
+        prev.map((a) => (a.id === articleId ? { ...a, published } : a))
+      );
+
+      toast.success(published ? "Article published" : "Article unpublished");
+      router.refresh();
+    } catch {
+      toast.error("Failed to update article");
+    }
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -211,6 +253,7 @@ export function SortableArticleList({ courseId, chapterId, initialArticles }: So
               courseId={courseId}
               chapterId={chapterId}
               index={index}
+              onPublishToggle={handlePublishToggle}
             />
           ))}
         </div>

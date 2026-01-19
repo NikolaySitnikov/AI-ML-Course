@@ -152,7 +152,7 @@ export function TiptapEditor({
   }
 
   return (
-    <div className="border border-border rounded-lg overflow-hidden">
+    <div className="border border-border rounded-lg">
       <EditorToolbar editor={editor} />
       <EditorContent editor={editor} />
     </div>

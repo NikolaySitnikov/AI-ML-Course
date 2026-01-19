@@ -40,6 +40,11 @@ export function ImageUploadDialog({
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
+  const [uploadInfo, setUploadInfo] = useState<{
+    originalSize: number;
+    optimizedSize: number;
+    reduction: string;
+  } | null>(null);
   const [alt, setAlt] = useState("");
   const [caption, setCaption] = useState("");
   const [size, setSize] = useState("large");
@@ -51,6 +56,7 @@ export function ImageUploadDialog({
   const resetState = useCallback(() => {
     setPreview(null);
     setUploadedUrl(null);
+    setUploadInfo(null);
     setAlt("");
     setCaption("");
     setSize("large");
@@ -91,8 +97,13 @@ export function ImageUploadDialog({
         throw new Error(data.error || "Upload failed");
       }
 
-      const { url } = await response.json();
-      setUploadedUrl(url);
+      const data = await response.json();
+      setUploadedUrl(data.url);
+      setUploadInfo({
+        originalSize: data.originalSize,
+        optimizedSize: data.optimizedSize,
+        reduction: data.reduction,
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
       setPreview(null);
@@ -143,7 +154,7 @@ export function ImageUploadDialog({
                 Click to upload an image
               </p>
               <p className="text-xs text-muted-foreground">
-                JPEG, PNG, GIF, or WebP (max 5MB)
+                JPEG, PNG, GIF, or WebP (max 20MB)
               </p>
               <input
                 ref={fileInputRef}
@@ -174,6 +185,18 @@ export function ImageUploadDialog({
                   <LoadingSpinner />
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Compression Info */}
+          {uploadInfo && (
+            <div className="text-xs text-muted-foreground bg-muted/50 rounded-md p-2 flex items-center gap-2">
+              <span>
+                Optimized: {(uploadInfo.originalSize / 1024 / 1024).toFixed(1)}MB → {(uploadInfo.optimizedSize / 1024 / 1024).toFixed(1)}MB
+              </span>
+              <span className="text-green-600 font-medium">
+                ({uploadInfo.reduction} smaller)
+              </span>
             </div>
           )}
 

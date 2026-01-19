@@ -20,7 +20,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, MoreHorizontal, Pencil, FileText } from "lucide-react";
+import { GripVertical, MoreHorizontal, Pencil, FileText, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { Chapter } from "@prisma/client";
 
@@ -46,9 +46,10 @@ interface SortableChapterItemProps {
   chapter: ChapterWithCount;
   courseId: string;
   index: number;
+  onPublishToggle: (chapterId: string, published: boolean) => void;
 }
 
-function SortableChapterItem({ chapter, courseId, index }: SortableChapterItemProps) {
+function SortableChapterItem({ chapter, courseId, index, onPublishToggle }: SortableChapterItemProps) {
   const {
     attributes,
     listeners,
@@ -132,6 +133,20 @@ function SortableChapterItem({ chapter, courseId, index }: SortableChapterItemPr
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => onPublishToggle(chapter.id, !chapter.published)}>
+                {chapter.published ? (
+                  <>
+                    <EyeOff className="h-4 w-4 mr-2" />
+                    Unpublish
+                  </>
+                ) : (
+                  <>
+                    <Eye className="h-4 w-4 mr-2" />
+                    Publish
+                  </>
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DeleteChapterButton
                 courseId={courseId}
                 chapterId={chapter.id}
@@ -155,6 +170,30 @@ export function SortableChapterList({ courseId, initialChapters }: SortableChapt
   const [chapters, setChapters] = useState(initialChapters);
   const [isSaving, setIsSaving] = useState(false);
   const dndId = useId();
+
+  const handlePublishToggle = async (chapterId: string, published: boolean) => {
+    try {
+      const response = await fetch(`/api/courses/${courseId}/chapters/${chapterId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ published }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update chapter");
+      }
+
+      // Update local state
+      setChapters((prev) =>
+        prev.map((c) => (c.id === chapterId ? { ...c, published } : c))
+      );
+
+      toast.success(published ? "Chapter published" : "Chapter unpublished");
+      router.refresh();
+    } catch {
+      toast.error("Failed to update chapter");
+    }
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -215,6 +254,7 @@ export function SortableChapterList({ courseId, initialChapters }: SortableChapt
               chapter={chapter}
               courseId={courseId}
               index={index}
+              onPublishToggle={handlePublishToggle}
             />
           ))}
         </div>

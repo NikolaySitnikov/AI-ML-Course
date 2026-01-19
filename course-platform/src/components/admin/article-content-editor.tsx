@@ -73,33 +73,25 @@ export function ArticleContentEditor({
   );
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="text-sm text-muted-foreground">
-          {hasChanges ? (
-            <span className="text-amber-500">Unsaved changes</span>
-          ) : (
-            <span>All changes saved</span>
-          )}
-        </div>
-        <SaveButton />
-      </div>
-
+    <div className="space-y-4 pb-20">
       <TiptapEditor
         content={content}
         onChange={handleContentChange}
         placeholder="Start writing your article content..."
       />
 
-      <div className="flex items-center justify-between pt-4 border-t border-border">
-        <div className="text-sm text-muted-foreground">
-          {hasChanges ? (
-            <span className="text-amber-500">Unsaved changes</span>
-          ) : (
-            <span>All changes saved</span>
-          )}
+      {/* Sticky save bar */}
+      <div className="fixed bottom-0 left-0 right-0 md:left-64 bg-background border-t border-border p-4 z-40">
+        <div className="flex items-center justify-between max-w-none">
+          <div className="text-sm text-muted-foreground">
+            {hasChanges ? (
+              <span className="text-amber-500">Unsaved changes</span>
+            ) : (
+              <span>All changes saved</span>
+            )}
+          </div>
+          <SaveButton />
         </div>
-        <SaveButton />
       </div>
     </div>
   );

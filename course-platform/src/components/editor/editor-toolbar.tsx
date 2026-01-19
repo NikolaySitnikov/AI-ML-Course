@@ -133,7 +133,7 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-0.5 border-b border-border bg-muted/50 p-1">
+      <div className="flex flex-wrap items-center gap-0.5 border-b border-border bg-background p-1 sticky top-16 z-40 rounded-t-lg">
         {/* Undo/Redo */}
         <ToolbarButton
           onClick={() => editor.chain().focus().undo().run()}
