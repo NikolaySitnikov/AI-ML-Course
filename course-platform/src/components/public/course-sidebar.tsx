@@ -88,7 +88,7 @@ export function CourseSidebar({
       <div
         ref={sidebarRef}
         style={{ height: sidebarHeight }}
-        className="fixed top-20 w-72 overflow-y-auto pr-4 scrollbar-thin overscroll-contain bg-background"
+        className="fixed top-20 w-72 overflow-y-auto pr-4 overscroll-contain bg-background sidebar-scrollbar"
       >
         <Link
           href={`/courses/${courseSlug}`}
