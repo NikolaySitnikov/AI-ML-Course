@@ -3,7 +3,7 @@ import { BookOpen } from "lucide-react";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border bg-muted/30">
+    <footer className="relative z-10 border-t border-border bg-muted/30">
       <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
         <div className="flex flex-col items-center gap-6 md:flex-row md:justify-between">
           {/* Logo and description */}
